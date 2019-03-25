@@ -11,6 +11,7 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=4, choices=STATUS_CHOICES, default='NEW')
     date = models.DateField(verbose_name='completion date')
+    delayed = models.CharField(max_length=50, default=None, blank=True, null=True)
     description = models.TextField()
 
     class Meta:

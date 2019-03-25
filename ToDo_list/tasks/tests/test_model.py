@@ -10,7 +10,7 @@ class TaskModelTest(TestCase):
     def setUpTestData(cls):
         user = User.objects.create_user(username='TestUser', password='test1234')
         Task.objects.create(name='Task for test', user=user, status='New', date=date(2019, 4, 9),
-                            description='This is description for test purposes')
+                            description='This is description for test purposes', delayed='This task is delayed')
 
     def test_name_label(self):
         task = Task.objects.get(id=1)
@@ -46,3 +46,13 @@ class TaskModelTest(TestCase):
         task = Task.objects.get(id=1)
         field_label = task._meta.get_field('description').verbose_name
         self.assertEqual(field_label, 'description')
+
+    def test_delayed_field(self):
+        task = Task.objects.get(id=1)
+        field_label = task._meta.get_field('delayed').verbose_name
+        self.assertEqual(field_label, 'delayed')
+
+    def test_delayed_max_length(self):
+        task = Task.objects.get(id=1)
+        field_label = task._meta.get_field('delayed').max_length
+        self.assertEqual(field_label, 50)
