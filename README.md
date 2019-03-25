@@ -24,7 +24,7 @@ Application which destiny is to create, edit and check tasks added by users
 ```bash 
    pip install Django
 ```
-7. Install Django:
+7. Install Rest_Framework:
 ```bash 
    pip install djangorestframework
 ```
