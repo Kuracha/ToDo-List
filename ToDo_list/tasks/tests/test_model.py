@@ -10,7 +10,7 @@ class TaskModelTest(TestCase):
     def setUpTestData(cls):
         user = User.objects.create_user(username='TestUser', password='test1234')
         Task.objects.create(name='Task for test', user=user, status='New', date=date(2019, 4, 9),
-                            description='This is description for test purposes', delayed='This task is delayed')
+                            description='This is description for test purposes', delayed='Task is delayed')
 
     def test_name_label(self):
         task = Task.objects.get(id=1)
