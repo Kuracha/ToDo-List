@@ -3,38 +3,38 @@ from rest_framework import serializers
 from ..models import Task
 
 
-class TaskSerializer(serializers.ModelSerializer):
+class TaskDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'user', 'status', 'date', 'description', 'delayed')
+        fields = ('id', 'name', 'creator', 'status', 'completion_date', 'description', 'warning_of_delaying')
 
 
-class IndexSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+class TasksIndexSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='creator.username')
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'date', 'status', 'user', 'delayed')
+        fields = ('id', 'name', 'completion_date', 'status', 'creator', 'warning_of_delaying')
 
 
-class StatusSerializer(serializers.ModelSerializer):
+class UpdateTaskStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
         fields = ('status',)
 
 
-class MyTasksSerializer(serializers.ModelSerializer):
+class UserTasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'status', 'date', 'description', 'delayed')
+        fields = ('name', 'status', 'completion_date', 'description', 'warning_of_delaying')
 
 
 class CreateTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'date', 'description',)
+        fields = ('name', 'completion_date', 'description',)
 

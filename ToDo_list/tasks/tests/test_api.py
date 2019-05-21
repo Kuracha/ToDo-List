@@ -11,7 +11,7 @@ class TaskIndexAPI(APITestCase):
     def setUp(self):
         user = User.objects.create_user(username='TestUser', password='test1234')
         Task.objects.create(name='Task for test', user=user, status='New', date=date(2019, 4, 9),
-                            description='This is description for test purposes', delayed='This task is delayed')
+                            description='This is description for test purposes', delayed='This task is warning_of_delaying')
 
     def test_access(self):
         Task.objects.all()
@@ -23,7 +23,7 @@ class TaskDetailAPI(APITestCase):
     def setUp(self):
         user = User.objects.create_user(username='TestUser', password='test1234')
         Task.objects.create(name='Task for test', user=user, status='New', date=date(2019, 4, 9),
-                            description='This is description for test purposes', delayed='This task is delayed')
+                            description='This is description for test purposes', delayed='This task is warning_of_delaying')
 
     def test_access(self):
         task = Task.objects.get(id=1)
@@ -60,7 +60,7 @@ class MyTasksAPI(APITestCase):
         self.client = APIClient()
         user1 = User.objects.create_user(username='test', password='test123')
         user2 = User.objects.create_user(username='test2', password='test123')
-        Task.objects.create(name=f'Task for test', user=user1, status='New', date=date(2019, 4, 9),
+        Task.objects.create(name=f'Task for test', user=user1, status='New', date=Q,
                             description='This is description for test purposes')
         Task.objects.create(name=f'Task for test4', user=user2, status='New', date=date(2019, 4, 10),
                             description='This is description for test purposes')
@@ -84,8 +84,8 @@ class MyTasksAPI(APITestCase):
         login = self.client.login(username='test2', password='test123')
         data = {
             "name": "Testing Task",
-            "date": "2019-04-19",
-            "description": "Testing task description belonging to Test user"
+            "completion_date": "2019-04-19",
+            "description": "Testing task description belonging to Test creator"
         }
         response = self.client.post(reverse('my_tasks'), data, format='json')
         self.assertTrue(login)
@@ -96,8 +96,8 @@ class MyTasksAPI(APITestCase):
         login = self.client.login(username='test2', password='test123')
         data = {
             "name": "Testing Task",
-            "date": 2019-4-19,
-            "description": "Testing task description belonging to Test user"
+            "completion_date": 2019-4-19,
+            "description": "Testing task description belonging to Test creator"
         }
         response = self.client.post(reverse('my_tasks'), data, format='json')
         self.assertTrue(login)

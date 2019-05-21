@@ -10,7 +10,7 @@ class TaskModelTest(TestCase):
     def setUpTestData(cls):
         user = User.objects.create_user(username='TestUser', password='test1234')
         Task.objects.create(name='Task for test', user=user, status='New', date=date(2019, 4, 9),
-                            description='This is description for test purposes', delayed='Task is delayed')
+                            description='This is description for test purposes', delayed='Task is warning_of_delaying')
 
     def test_name_label(self):
         task = Task.objects.get(id=1)
@@ -24,8 +24,8 @@ class TaskModelTest(TestCase):
 
     def test_user_label(self):
         task = Task.objects.get(id=1)
-        field_label = task._meta.get_field('user').verbose_name
-        self.assertEqual(field_label, 'user')
+        field_label = task._meta.get_field('creator').verbose_name
+        self.assertEqual(field_label, 'creator')
 
     def test_status_field(self):
         task = Task.objects.get(id=1)
@@ -39,8 +39,8 @@ class TaskModelTest(TestCase):
 
     def test_date_label(self):
         task = Task.objects.get(id=1)
-        field_label = task._meta.get_field('date').verbose_name
-        self.assertEqual(field_label, 'completion date')
+        field_label = task._meta.get_field('completion_date').verbose_name
+        self.assertEqual(field_label, 'completion completion_date')
 
     def test_description_field(self):
         task = Task.objects.get(id=1)
@@ -49,10 +49,10 @@ class TaskModelTest(TestCase):
 
     def test_delayed_field(self):
         task = Task.objects.get(id=1)
-        field_label = task._meta.get_field('delayed').verbose_name
-        self.assertEqual(field_label, 'delayed')
+        field_label = task._meta.get_field('warning_of_delaying').verbose_name
+        self.assertEqual(field_label, 'warning_of_delaying')
 
     def test_delayed_max_length(self):
         task = Task.objects.get(id=1)
-        field_label = task._meta.get_field('delayed').max_length
+        field_label = task._meta.get_field('warning_of_delaying').max_length
         self.assertEqual(field_label, 50)

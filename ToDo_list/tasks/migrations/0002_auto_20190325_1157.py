@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='task',
-            name='delayed',
+            name='warning_of_delaying',
             field=models.CharField(blank=True, default=None, max_length=50, null=True),
         ),
     ]

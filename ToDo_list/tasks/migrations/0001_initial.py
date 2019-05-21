@@ -21,12 +21,12 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 ('slug', models.SlugField(unique=True)),
                 ('status', models.CharField(choices=[('NEW', 'New'), ('DONE', 'Done')], default='NEW', max_length=4)),
-                ('date', models.DateField(verbose_name='completion date')),
+                ('completion_date', models.DateField(verbose_name='completion completion_date')),
                 ('description', models.TextField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'ordering': ('date',),
+                'ordering': ('completion_date',),
             },
         ),
     ]
