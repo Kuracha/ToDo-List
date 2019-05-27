@@ -11,7 +11,8 @@ class Task(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Unfinished')
     completion_date = models.DateField(verbose_name='date for completion')
-    warning_if_delayed = models.CharField(max_length=50, default=None, blank=True, verbose_name='warning of delaying')
+    warning_if_delayed = models.CharField(
+        max_length=50, default='', blank=True, null=True, verbose_name='warning of delaying')
     description = models.TextField(max_length=500)
 
     class Meta:

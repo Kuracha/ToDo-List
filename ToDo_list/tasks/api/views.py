@@ -25,7 +25,7 @@ class TasksViewset(viewsets.ModelViewSet):
 
 class TasksIndexAPIView(APIView):
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name', 'description', 'user__username')
+    search_fields = ('name', 'description', 'creator__username')
 
     def get_queryset(self):
         return Task.objects.all()
@@ -38,13 +38,13 @@ class TasksIndexAPIView(APIView):
     def check_if_tasks_are_delayed(self, queryset):
         checked_tasks = queryset
         for task in checked_tasks:
-            if task.date <= date.today() and task.status == 'Unfinished':
-                task.warning_of_delaying = 'This task is delayed'
+            if task.completion_date <= date.today() and task.status == 'Unfinished':
+                task.warning_if_delayed = 'This task is delayed'
                 task.save()
             else:
-                task.warning_of_delaying = ''
+                task.warning_if_delayed = ''
                 task.save()
-                return checked_tasks
+        return checked_tasks
 
     def get(self, request):
         tasks_filter = self.filter_queryset(self.get_queryset())
@@ -65,7 +65,7 @@ class TaskDetailAPIView(APIView):
 
     def check_if_task_is_delayed(self, task):
         checked_task = task
-        if checked_task.date <= date.today() and checked_task.status == 'Unfinished':
+        if checked_task.completion_date <= date.today() and checked_task.status == 'Unfinished':
             checked_task.warning_if_delayed = 'This task is delayed'
             checked_task.save()
         else:
@@ -84,18 +84,18 @@ class UserTasksAPIView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        return Task.objects.filter(creator=self.request.user)
 
     def check_if_tasks_are_delayed(self, queryset):
         checked_tasks = queryset
         for task in checked_tasks:
-            if task.date <= date.today() and status == 'Unfinished':
+            if task.completion_date <= date.today() and task.status == 'Unfinished':
                 task.warning_if_delayed = 'This task is delayed'
                 task.save()
             else:
                 task.warning_if_delayed = ''
                 task.save()
-            return checked_tasks
+        return checked_tasks
 
     def get(self, request):
         user_tasks = self.get_queryset()
@@ -106,7 +106,7 @@ class UserTasksAPIView(APIView):
     def post(self, request):
         serializer = CreateTaskSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=self.request.user,)
+            serializer.save(creator=self.request.user,)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -7,15 +7,15 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'creator', 'status', 'completion_date', 'description', 'warning_of_delaying')
+        fields = ('id', 'name', 'creator', 'status', 'completion_date', 'description', 'warning_if_delayed')
 
 
 class TasksIndexSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='creator.username')
+    creator = serializers.ReadOnlyField(source='creator.username')
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'completion_date', 'status', 'creator', 'warning_of_delaying')
+        fields = ('id', 'name', 'completion_date', 'status', 'creator', 'warning_if_delayed')
 
 
 class UpdateTaskStatusSerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class UserTasksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'status', 'completion_date', 'description', 'warning_of_delaying')
+        fields = ('name', 'status', 'completion_date', 'description', 'warning_if_delayed')
 
 
 class CreateTaskSerializer(serializers.ModelSerializer):
