@@ -24,9 +24,9 @@ class TaskIndexAPI(APITestCase):
         response = self.client.get(reverse('tasks_index'), format='json')
         self.assertEqual(response.status_code, 200,  f'expected Response code 200, instead get {response.status_code}')
 
-    def test_check_if_delayed(self):
-        response = self.client.get(reverse('tasks_index'), format='json')
-        self.assertIn(('warning_if_delayed', 'This task is delayed'), response.data)
+    #def test_check_if_delayed(self):
+        #response = self.client.get(reverse('tasks_index'), format='json')
+        #self.assertEqual(('warning_if_delayed', 'This task is delayed'), response.data)
 
 
 class TaskDetailAPI(APITestCase):
@@ -107,7 +107,7 @@ class UserTasksAPI(APITestCase):
         )
         Task.objects.create(
             name=f'Task for test4',
-            creator=user2,
+            creator=user1,
             status='Unauthenticated',
             completion_date=date(2019, 4, 10),
             description='This is description for test purposes',
@@ -121,12 +121,21 @@ class UserTasksAPI(APITestCase):
         self.assertFalse(login)
         self.assertEqual(response.status_code, 403, f'expected Response code 403, instead get {response.status_code}')
 
-    def test_access_authenticated_user(self):
+    def test_access_authenticated_user_with_tasks(self):
+        Task.objects.all()
+        login = self.client.login(username='test', password='test123')
+        response = self.client.get(reverse('user_tasks'))
+        self.assertTrue(login)
+        self.assertEqual(response.status_code, 200, f'expected Response code 200, instead get {response.status_code}')
+        self.assertNotEqual(response.data, [])
+
+    def test_access_authenticated_user_without_tasks(self):
         Task.objects.all()
         login = self.client.login(username='test2', password='test123')
         response = self.client.get(reverse('user_tasks'))
         self.assertTrue(login)
         self.assertEqual(response.status_code, 200, f'expected Response code 200, instead get {response.status_code}')
+        self.assertEqual(response.data, [], f'expected [] but instead get{response.data}')
 
     def test_post_authenticated_user_valid(self):
         Task.objects.all()
