@@ -24,10 +24,6 @@ class TaskIndexAPI(APITestCase):
         response = self.client.get(reverse('tasks_index'), format='json')
         self.assertEqual(response.status_code, 200,  f'expected Response code 200, instead get {response.status_code}')
 
-    #def test_check_if_delayed(self):
-        #response = self.client.get(reverse('tasks_index'), format='json')
-        #self.assertEqual(('warning_if_delayed', 'This task is delayed'), response.data)
-
 
 class TaskDetailAPI(APITestCase):
     def setUp(self):
@@ -38,10 +34,8 @@ class TaskDetailAPI(APITestCase):
         Task.objects.create(
             name='Task for test',
             creator=user,
-            status='Unauthenticated',
             completion_date=date(2019, 4, 9),
             description='This is description for test purposes',
-            warning_if_delayed=''
         )
 
     def test_access(self):
@@ -60,30 +54,32 @@ class TaskUpdateStatusAPI(APITestCase):
             username='test2',
             password='test123'
         )
-        client = APIClient()
-        client.force_authenticate(user=user2)
+        self.client = APIClient()
         Task.objects.create(
             name='Task for test',
-            creator=User.objects.get(username='test2'),
-            status='Unauthenticated',
+            creator=user2,
             completion_date=date(2019, 4, 9),
             description='This is description for test purposes',
-            warning_if_delayed=''
         )
 
     def test_access_unauthenticated_user(self):
         task = Task.objects.get(id=1)
-        data = {"status": "DONE"}
-        response = self.client.post(reverse('edit_task_status', kwargs={'pk': task.id}), data, format='json')
-        self.assertEqual(response.status_code, 405, f'expected Response code 405, instead get {response.status_code}')
+        response = self.client.post(reverse('edit_task_status', kwargs={'pk': task.id}), format='json')
+        self.assertEqual(response.status_code, 405, f'expected status code 405, instead get {response.status_code}')
 
     def test_access_authenticated_user_without_permission(self):
         task = Task.objects.get(id=1)
         login = self.client.login(username='test', password='test123')
-        data = {"status": "DONE"}
-        response = self.client.post(reverse('edit_task_status', kwargs={'pk': task.id}), data, format='json')
+        response = self.client.post(reverse('edit_task_status', kwargs={'pk': task.id}), format='json')
         self.assertTrue(login)
-        self.assertEqual(response.status_code, 405, f'expected Response code 405, instead get {response.status_code}')
+        self.assertEqual(response.status_code, 405, f'expected status code 405, instead get {response.status_code}')
+
+    def test_authenticated_user_with_permission(self):
+        task = Task.objects.get(id=1)
+        login = self.client.login(username='test2', password='test123')
+        response = self.client.get(reverse('edit_task_status', kwargs={'pk': task.id}), format='json')
+        self.assertTrue(login)
+        self.assertEqual(response.status_code, 200, f'expected status code 200, instead get{response.status_code}')
 
 
 class UserTasksAPI(APITestCase):
@@ -100,18 +96,14 @@ class UserTasksAPI(APITestCase):
         Task.objects.create(
             name=f'Task for test',
             creator=user1,
-            status='Unauthenticated',
             completion_date=date(2023, 8, 10),
             description='This is description for test purposes',
-            warning_if_delayed=''
         )
         Task.objects.create(
             name=f'Task for test4',
             creator=user1,
-            status='Unauthenticated',
             completion_date=date(2019, 4, 10),
             description='This is description for test purposes',
-            warning_if_delayed=''
         )
 
     def test_access_unauthenticated_user(self):
